@@ -34,8 +34,8 @@ public class MecanumDrive extends LinearOpMode {
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
         // See the note about this earlier on this page.
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         IMU imu = hardwareMap.get(IMU.class, "imu");
 
@@ -58,18 +58,18 @@ public class MecanumDrive extends LinearOpMode {
             double botHeading = imu.getRobotYawPitchRollAngles()
                     .getYaw(AngleUnit.RADIANS);
             // Rotate joystick inputs based on robot heading
-            double robotX = x * Math.cos(-botHeading)
-                    - y * Math.sin(-botHeading);
+            double robotX = x * Math.cos(botHeading)
+                    - y * Math.sin(botHeading);
 
-            double robotY = x * Math.sin(-botHeading)
-                    + y * Math.cos(-botHeading);
+            double robotY = x * Math.sin(botHeading)
+                    + y * Math.cos(botHeading);
 
-            //double denominator = Math.max(
-                   // Math.abs(robotY) + Math.abs(robotX) + Math.abs(rot), 1
-           // );
+            double denominator = Math.max(
+                    Math.abs(robotY) + Math.abs(robotX) + Math.abs(rot), 1
+            );
 
-            //robotX = robotX * 0.97;
-            double denominator = Math.max(Math.abs(robotY) + Math.abs(robotX) + Math.abs(rot), 1);
+            robotX = robotX * 2;
+
 
             double frontLeftPower = (robotY + robotX + rot) / denominator;
             double backLeftPower = (robotY + robotX - rot) / denominator;
