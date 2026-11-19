@@ -34,18 +34,15 @@ public class MecanumDrive extends LinearOpMode {
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
         // See the note about this earlier on this page.
-        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         IMU imu = hardwareMap.get(IMU.class, "imu");
 
         imu.initialize(new IMU.Parameters(
                 new RevHubOrientationOnRobot(
                         RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD)));
-
-
-
+                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)));
         waitForStart();
 
         if (isStopRequested()) return;
@@ -59,7 +56,7 @@ public class MecanumDrive extends LinearOpMode {
                     .getYaw(AngleUnit.RADIANS);
             // Rotate joystick inputs based on robot heading
             double robotX = x * Math.cos(botHeading)
-                    - y * Math.sin(botHeading);
+                    + y * Math.sin(botHeading);
 
             double robotY = x * Math.sin(botHeading)
                     + y * Math.cos(botHeading);
@@ -68,11 +65,8 @@ public class MecanumDrive extends LinearOpMode {
                     Math.abs(robotY) + Math.abs(robotX) + Math.abs(rot), 1
             );
 
-            robotX = robotX * 2;
-
-
             double frontLeftPower = (robotY + robotX + rot) / denominator;
-            double backLeftPower = (robotY + robotX - rot) / denominator;
+            double backLeftPower = (robotY - robotX + rot) / denominator;
             double frontRightPower = (robotY - robotX - rot) / denominator;
             double backRightPower = (robotY + robotX - rot) / denominator;
 
@@ -81,8 +75,13 @@ public class MecanumDrive extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
 
+            // frontLeftMotor.setPower(0.1);
+            // backLeftMotor.setPower(0.1);
+            // frontRightMotor.setPower(0.1);
+            // backRightMotor.setPower(0.1);
+            telemetry.addData("yaw", botHeading);
+
             telemetry.update();
         }
-
     }
 }
