@@ -42,7 +42,7 @@ public class MecanumDrive extends LinearOpMode {
         imu.initialize(new IMU.Parameters(
                 new RevHubOrientationOnRobot(
                         RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)));
+                        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD)));
 
 
 
@@ -51,7 +51,7 @@ public class MecanumDrive extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-            double y = gamepad1.left_stick_y; // Remember, Y stick value is reversed
+            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x; // Counteract imperfect strafing
             double rot = gamepad1.right_stick_x;
 
