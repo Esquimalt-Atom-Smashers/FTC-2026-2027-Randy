@@ -1,18 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 @TeleOp
-public class MecanumDrive extends LinearOpMode {
+public class MECHAATOM extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
@@ -21,14 +21,21 @@ public class MecanumDrive extends LinearOpMode {
         DcMotor backLeftMotor   = hardwareMap.dcMotor.get("backLeftMotor");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         DcMotor backRightMotor  = hardwareMap.dcMotor.get("backRightMotor");
+        DcMotor intake = hardwareMap.dcMotor.get("intake");
+        CRServo SpinnyWheel1 =hardwareMap.crservo.get(" SpinnyWheel1");
+        CRServo SpinnyWheel2 =hardwareMap.crservo.get(" SpinnyWheel2");
+
 
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        // boolean isFlywheelMotorOn = false;
-        // boolean lastButtonState = false;
+        boolean isIntaking = false;
+        boolean isOutaking = false;
+        boolean isSpinningRight = false;
+        boolean isSpinningLeft  = false;
+
 
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
@@ -74,6 +81,54 @@ public class MecanumDrive extends LinearOpMode {
             backLeftMotor.setPower(backLeftPower);
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
+
+
+
+            if (BlocksOpModeCompanion.gamepad1.leftTriggerWasPressed()) {
+                isIntaking= !isIntaking;
+                isOutaking = false;
+                isSpinningLeft = !isSpinningLeft;
+                isSpinningRight = !isSpinningRight;
+
+
+            }
+
+            if (BlocksOpModeCompanion.gamepad1.leftTriggerWasPressed()) {
+                isOutaking = !isOutaking;
+                isIntaking = false;
+                isSpinningLeft = false;
+                isSpinningRight = false;
+
+            }
+
+            if (isIntaking) {
+                intake.setPower(-1.0);
+            } else {
+                intake.setPower(0.0);
+            }
+
+            if (isOutaking) {
+                intake.setPower(1.0);
+            } else {
+                intake.setPower(0.0);
+            }
+
+
+
+
+            if (isSpinningLeft) {
+                SpinnyWheel1.setPower(1);
+            } else {
+                SpinnyWheel1.setPower(0);
+            }
+
+            if (isSpinningRight) {
+                SpinnyWheel2.setPower(-1);
+            } else {
+                SpinnyWheel2.setPower(0);
+            }
+
+
 
             // frontLeftMotor.setPower(0.1);
             // backLeftMotor.setPower(0.1);
