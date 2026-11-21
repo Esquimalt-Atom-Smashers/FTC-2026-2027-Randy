@@ -21,9 +21,13 @@ public class MecanumDrive extends LinearOpMode {
         DcMotor backLeftMotor   = hardwareMap.dcMotor.get("backLeftMotor");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         DcMotor backRightMotor  = hardwareMap.dcMotor.get("backRightMotor");
-        DcMotor intake   = hardwareMap.dcMotor.get("intake");
+        DcMotor intake = hardwareMap.dcMotor.get("intake");
         CRServo spinningLeft = hardwareMap.crservo.get("spinningLeft");
         CRServo spinningRight = hardwareMap.crservo.get("spinningRight");
+        DcMotor shooter = hardwareMap.dcMotor.get("shooter");
+        DcMotor pusher = hardwareMap.dcMotor.get("pusher");
+        CRServo turret = hardwareMap.crservo.get("turret");
+
 
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -34,7 +38,6 @@ public class MecanumDrive extends LinearOpMode {
         boolean isOutaking = false;
         boolean isSpinningLeft = false;
         boolean isSpinningRight = false;
-
 
 
         // boolean isFlywheelMotorOn = false;
@@ -66,10 +69,10 @@ public class MecanumDrive extends LinearOpMode {
                     .getYaw(AngleUnit.RADIANS);
             // Rotate joystick inputs based on robot heading
             double robotX = x * Math.cos(botHeading)
-                    + y * Math.sin(botHeading);
+                    - y * Math.sin(botHeading);
 
             double robotY = x * Math.sin(botHeading)
-                    - y * Math.cos(botHeading);
+                    + y * Math.cos(botHeading);
 
             double denominator = Math.max(
                     Math.abs(robotY) + Math.abs(robotX) + Math.abs(rot), 1
@@ -84,6 +87,38 @@ public class MecanumDrive extends LinearOpMode {
             backLeftMotor.setPower(backLeftPower);
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
+
+
+
+            if (gamepad1.rightBumperWasPressed()) {
+                isIntaking= !isIntaking;
+                isSpinningLeft = !isSpinningLeft;
+                isSpinningRight = !isSpinningRight;
+                 isOutaking = false;
+             }
+
+            if (gamepad1.leftBumperWasPressed()) {
+                isOutaking = !isOutaking;
+                 isIntaking = false;
+                 isSpinningLeft = false;
+                 isSpinningRight = false;
+             }
+
+             if (isIntaking) {
+                 intake.setPower(-1.0);
+                 spinningLeft.setPower(-1.0);
+                 spinningRight.setPower(1.0);
+             } else {
+                 intake.setPower(0.0);
+                 spinningLeft.setPower(0.0);
+                 spinningRight.setPower(0.0);
+            }
+
+             if (isOutaking) {
+                 intake.setPower(1.0);
+             } else {
+                 intake.setPower(0.0);
+             }
 
             telemetry.update();
         }
