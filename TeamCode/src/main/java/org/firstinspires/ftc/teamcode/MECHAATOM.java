@@ -80,7 +80,7 @@ public class MECHAATOM extends LinearOpMode {
                     + y * Math.sin(botHeading);
 
             double robotY = x * Math.sin(botHeading)
-                    + y * Math.cos(botHeading);
+                    - y * Math.cos(botHeading);
 
             double denominator = Math.max(
                     Math.abs(robotY) + Math.abs(robotX) + Math.abs(rot), 1
@@ -98,6 +98,7 @@ public class MECHAATOM extends LinearOpMode {
 
             transfer.setPower(1.0);
             pusher.setPower(1.0);
+
             
             if (BlocksOpModeCompanion.gamepad1.right_trigger >= 0.5) {
 //                isIntaking= !isIntaking;
