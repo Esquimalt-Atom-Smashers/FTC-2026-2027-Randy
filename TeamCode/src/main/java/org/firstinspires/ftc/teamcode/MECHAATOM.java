@@ -22,8 +22,14 @@ public class MECHAATOM extends LinearOpMode {
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         DcMotor backRightMotor  = hardwareMap.dcMotor.get("backRightMotor");
         DcMotor intake = hardwareMap.dcMotor.get("intake");
-        CRServo SpinnyWheel1 =hardwareMap.crservo.get(" SpinnyWheel1");
-        CRServo SpinnyWheel2 =hardwareMap.crservo.get(" SpinnyWheel2");
+        DcMotor transfer = hardwareMap.dcMotor.get("transfer");
+        DcMotor pusher = hardwareMap.dcMotor.get("pusher");
+        CRServo spinnyWheel1 =hardwareMap.crservo.get(" spinnyWheel1");
+        CRServo spinnyWheel2 =hardwareMap.crservo.get(" spinnyWheel2");
+        
+        DcMotor shooter = hardwareMap.dcMotor.get("shooter");
+       
+        CRServo turret = hardwareMap.crservo.get("turret");
 
 
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -33,8 +39,16 @@ public class MECHAATOM extends LinearOpMode {
 
         boolean isIntaking = false;
         boolean isOutaking = false;
+
+
+
+
+        boolean isSpinningLeft = false;
         boolean isSpinningRight = false;
-        boolean isSpinningLeft  = false;
+
+
+        // boolean isFlywheelMotorOn = false;
+        // boolean lastButtonState = false;
 
 
         // Reverse the right side motors. This may be wrong for your setup.
@@ -82,59 +96,61 @@ public class MECHAATOM extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
 
+            transfer.setPower(1.0);
+            pusher.setPower(1.0);
+            
+            if (BlocksOpModeCompanion.gamepad1.right_trigger >= 0.5) {
+//                isIntaking= !isIntaking;
+//                isOutaking = false;
+//                isSpinningLeft = !isSpinningLeft;
+//                isSpinningRight = !isSpinningRight;
+
+                isOutaking = true;
 
 
-            if (BlocksOpModeCompanion.gamepad1.leftTriggerWasPressed()) {
-                isIntaking= !isIntaking;
-                isOutaking = false;
-                isSpinningLeft = !isSpinningLeft;
-                isSpinningRight = !isSpinningRight;
-
-
-            }
-
-            if (BlocksOpModeCompanion.gamepad1.leftTriggerWasPressed()) {
-                isOutaking = !isOutaking;
-                isIntaking = false;
-                isSpinningLeft = false;
-                isSpinningRight = false;
-
-            }
-
-            if (isIntaking) {
-                intake.setPower(-1.0);
             } else {
-                intake.setPower(0.0);
+
+
+                isOutaking = false;
             }
+
+            if (BlocksOpModeCompanion.gamepad1.left_trigger >= 0.5) {
+//                isOutaking = !isOutaking;
+//                isIntaking = false;
+                isSpinningLeft = true;
+                isSpinningRight = true;
+                isIntaking = true;
+
+            } else {
+                isIntaking = false;
+            }
+
+//            if (isIntaking) {
+//                intake.setPower(1.0);
+//            } else {
+//
+//                intake.setPower(0.0);
+//            }
 
             if (isOutaking) {
-                intake.setPower(1.0);
-            } else {
+                intake.setPower(-1.0);
+                spinnyWheel2.setPower (-1.0);
+                spinnyWheel1.setPower(1.0);
+            } else if (isIntaking ) {
+            intake.setPower(1.0);
+                spinnyWheel2.setPower (1.0);
+                spinnyWheel1.setPower(-1.0);
+            }
+            else
+            {
+                spinnyWheel2.setPower (0.0);
+                spinnyWheel1.setPower(0.0);
                 intake.setPower(0.0);
+
             }
-
-
-
-
-            if (isSpinningLeft) {
-                SpinnyWheel1.setPower(1);
-            } else {
-                SpinnyWheel1.setPower(0);
-            }
-
-            if (isSpinningRight) {
-                SpinnyWheel2.setPower(-1);
-            } else {
-                SpinnyWheel2.setPower(0);
-            }
-
-
-
-            // frontLeftMotor.setPower(0.1);
-            // backLeftMotor.setPower(0.1);
-            // frontRightMotor.setPower(0.1);
-            // backRightMotor.setPower(0.1);
+            
             telemetry.addData("yaw", botHeading);
+
 
             telemetry.update();
         }
