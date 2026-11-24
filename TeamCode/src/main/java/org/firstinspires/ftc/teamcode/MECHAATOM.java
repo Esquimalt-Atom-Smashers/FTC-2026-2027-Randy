@@ -41,8 +41,8 @@ public class MECHAATOM extends LinearOpMode {
 
         boolean isIntaking = false;
         boolean isOutaking = false;
-
-
+        double targetVelocity = 1500.0;
+        double tolerance = 200.0;
 
 
         boolean isSpinningLeft = false;
@@ -99,7 +99,8 @@ public class MECHAATOM extends LinearOpMode {
             backRightMotor.setPower(backRightPower);
 
             transfer.setPower(-1.0);
-            pusher.setPower(-0.7);
+
+
             shooter.setVelocity(1550);
 
 
@@ -135,6 +136,15 @@ public class MECHAATOM extends LinearOpMode {
 //
 //                intake.setPower(0.0);
 //            }
+            if(gamepad1.a)
+            {
+                if(Math.abs(shooter.getVelocity()-targetVelocity) <= tolerance) {
+                    pusher.setPower(-0.7);
+                }
+            }else{
+
+                pusher.setPower(0.0);
+            }
 
             if (isOutaking) {
                 intake.setPower(-1.0);
