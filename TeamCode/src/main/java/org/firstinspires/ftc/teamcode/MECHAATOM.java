@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -27,9 +29,9 @@ public class MECHAATOM extends LinearOpMode {
         CRServo spinnyWheel1 =hardwareMap.crservo.get(" spinnyWheel1");
         CRServo spinnyWheel2 =hardwareMap.crservo.get(" spinnyWheel2");
         
-        DcMotor shooter = hardwareMap.dcMotor.get("shooter");
-       
-        CRServo turret = hardwareMap.crservo.get("turret");
+        DcMotorEx shooter = (DcMotorEx) hardwareMap.dcMotor.get("shooter");
+//
+//        CRServo turret = hardwareMap.crservo.get("turret");
 
 
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -77,10 +79,10 @@ public class MECHAATOM extends LinearOpMode {
                     .getYaw(AngleUnit.RADIANS);
             // Rotate joystick inputs based on robot heading
             double robotX = x * Math.cos(botHeading)
-                    + y * Math.sin(botHeading);
+                    - y * Math.sin(botHeading);
 
             double robotY = x * Math.sin(botHeading)
-                    - y * Math.cos(botHeading);
+                    + y * Math.cos(botHeading);
 
             double denominator = Math.max(
                     Math.abs(robotY) + Math.abs(robotX) + Math.abs(rot), 1
@@ -96,11 +98,12 @@ public class MECHAATOM extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
 
-            transfer.setPower(1.0);
-            pusher.setPower(1.0);
+            transfer.setPower(-1.0);
+            pusher.setPower(-0.7);
+            shooter.setVelocity(1550);
 
-            
-            if (BlocksOpModeCompanion.gamepad1.right_trigger >= 0.5) {
+
+            if (gamepad1.right_trigger >= 0.5) {
 //                isIntaking= !isIntaking;
 //                isOutaking = false;
 //                isSpinningLeft = !isSpinningLeft;
@@ -115,7 +118,7 @@ public class MECHAATOM extends LinearOpMode {
                 isOutaking = false;
             }
 
-            if (BlocksOpModeCompanion.gamepad1.left_trigger >= 0.5) {
+            if (gamepad1.left_trigger >= 0.5) {
 //                isOutaking = !isOutaking;
 //                isIntaking = false;
                 isSpinningLeft = true;
@@ -141,6 +144,7 @@ public class MECHAATOM extends LinearOpMode {
             intake.setPower(1.0);
                 spinnyWheel2.setPower (1.0);
                 spinnyWheel1.setPower(-1.0);
+
             }
             else
             {
