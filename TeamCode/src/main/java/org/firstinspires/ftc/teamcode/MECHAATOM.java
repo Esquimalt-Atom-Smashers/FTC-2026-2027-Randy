@@ -71,32 +71,35 @@ public class MECHAATOM extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-            double x = gamepad1.left_stick_x; // Counteract imperfect strafing
-            double rot = gamepad1.right_stick_x;
+            //Field Centric Code
+            double y  = -gamepad1.left_stick_y;
+            double x  =  gamepad1.left_stick_x;
+            double rx =  gamepad1.right_stick_x;
 
-            double botHeading = imu.getRobotYawPitchRollAngles()
-                    .getYaw(AngleUnit.RADIANS);
-            // Rotate joystick inputs based on robot heading
-            double robotX = x * Math.cos(botHeading)
-                    - y * Math.sin(botHeading);
+            double speed = gamepad1.right_bumper ? 0.4 : 1.0; // slow mode
+            if (gamepad1.options || gamepad1.back) {
+                imu.resetYaw();
+            }
 
-            double robotY = x * Math.sin(botHeading)
-                    + y * Math.cos(botHeading);
+            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
-            double denominator = Math.max(
-                    Math.abs(robotY) + Math.abs(robotX) + Math.abs(rot), 1
-            );
+            // Rotate the translation vector by -heading
+            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-            double frontLeftPower = (robotY + robotX + rot) / denominator;
-            double backLeftPower = (robotY - robotX + rot) / denominator;
-            double frontRightPower = (robotY - robotX - rot) / denominator;
-            double backRightPower = (robotY + robotX - rot) / denominator;
+            rotX *= 1.1; // counteract imperfect strafing
 
-            frontLeftMotor.setPower(frontLeftPower);
-            backLeftMotor.setPower(backLeftPower);
-            frontRightMotor.setPower(frontRightPower);
-            backRightMotor.setPower(backRightPower);
+            // Normalize so no wheel exceeds 1.0 and ratios are preserved
+            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+            double frontLeftPower = (rotY + rotX + rx) / denominator;
+            double backLeftPower = (rotY - rotX + rx) / denominator;
+            double frontRightPower = (rotY - rotX - rx) / denominator;
+            double backRightPower = (rotY + rotX - rx) / denominator;
+
+            frontLeftMotor.setPower(frontLeftPower * speed);
+            backLeftMotor.setPower(backLeftPower * speed);
+            frontRightMotor.setPower(frontRightPower * speed);
+            backRightMotor.setPower(backRightPower * speed);
 
             transfer.setPower(-1.0);
 
