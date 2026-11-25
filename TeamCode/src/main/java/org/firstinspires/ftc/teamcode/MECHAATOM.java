@@ -30,9 +30,8 @@ public class MECHAATOM extends LinearOpMode {
         CRServo spinnyWheel2 =hardwareMap.crservo.get(" spinnyWheel2");
         
         DcMotorEx shooter = (DcMotorEx) hardwareMap.dcMotor.get("shooter");
-//
-//        CRServo turret = hardwareMap.crservo.get("turret");
 
+//      CRServo turret = hardwareMap.crservo.get("turret");
 
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -42,16 +41,14 @@ public class MECHAATOM extends LinearOpMode {
         boolean isIntaking = false;
         boolean isOutaking = false;
         double targetVelocity = 1500.0;
-        double tolerance = 200.0;
-
+        final double kTolerance = 200.0;
+        final double kSlowMode = 0.4;
 
         boolean isSpinningLeft = false;
         boolean isSpinningRight = false;
 
-
         // boolean isFlywheelMotorOn = false;
         // boolean lastButtonState = false;
-
 
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
@@ -81,7 +78,7 @@ public class MECHAATOM extends LinearOpMode {
                 imu.resetYaw();
             }
 
-            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            double botHeading = GetIMUHeadingRadians(imu);
 
             // Rotate the translation vector by -heading
             double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -103,49 +100,40 @@ public class MECHAATOM extends LinearOpMode {
 
             transfer.setPower(-1.0);
 
-
             shooter.setVelocity(1550);
 
-
             if (gamepad1.right_trigger >= 0.5) {
-//                isIntaking= !isIntaking;
-//                isOutaking = false;
-//                isSpinningLeft = !isSpinningLeft;
-//                isSpinningRight = !isSpinningRight;
+//              isIntaking= !isIntaking;
+//              isOutaking = false;
+//              isSpinningLeft = !isSpinningLeft;
+//              isSpinningRight = !isSpinningRight;
 
                 isOutaking = true;
-
-
             } else {
-
-
                 isOutaking = false;
             }
 
             if (gamepad1.left_trigger >= 0.5) {
-//                isOutaking = !isOutaking;
-//                isIntaking = false;
+//              isOutaking = !isOutaking;
+//              isIntaking = false;
                 isSpinningLeft = true;
                 isSpinningRight = true;
                 isIntaking = true;
-
             } else {
                 isIntaking = false;
             }
 
-//            if (isIntaking) {
-//                intake.setPower(1.0);
-//            } else {
-//
-//                intake.setPower(0.0);
-//            }
-            if(gamepad1.a)
-            {
-                if(Math.abs(shooter.getVelocity()-targetVelocity) <= tolerance) {
+//          if (isIntaking) {
+//              intake.setPower(1.0);
+//          } else {
+//              intake.setPower(0.0);
+//          }
+
+            if(gamepad1.a) {
+                if(Math.abs(shooter.getVelocity()-targetVelocity) <= kTolerance) {
                     pusher.setPower(-0.7);
                 }
-            }else{
-
+            } else{
                 pusher.setPower(0.0);
             }
 
@@ -154,23 +142,22 @@ public class MECHAATOM extends LinearOpMode {
                 spinnyWheel2.setPower (-1.0);
                 spinnyWheel1.setPower(1.0);
             } else if (isIntaking ) {
-            intake.setPower(1.0);
+                intake.setPower(1.0);
                 spinnyWheel2.setPower (1.0);
                 spinnyWheel1.setPower(-1.0);
-
-            }
-            else
-            {
+            } else {
                 spinnyWheel2.setPower (0.0);
                 spinnyWheel1.setPower(0.0);
                 intake.setPower(0.0);
-
             }
             
             telemetry.addData("yaw", botHeading);
 
-
             telemetry.update();
         }
+    }
+
+    private static double GetIMUHeadingRadians(IMU imu) {
+        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
     }
 }
