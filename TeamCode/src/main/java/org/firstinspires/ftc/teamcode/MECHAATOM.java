@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -12,6 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
 public class MECHAATOM extends LinearOpMode {
@@ -28,6 +30,8 @@ public class MECHAATOM extends LinearOpMode {
         DcMotor pusher = hardwareMap.dcMotor.get("pusher");
         CRServo spinnyWheel1 =hardwareMap.crservo.get(" spinnyWheel1");
         CRServo spinnyWheel2 =hardwareMap.crservo.get(" spinnyWheel2");
+        Servo blocker = hardwareMap.servo.get("blocker");
+
         
         DcMotorEx shooter = (DcMotorEx) hardwareMap.dcMotor.get("shooter");
 
@@ -40,9 +44,12 @@ public class MECHAATOM extends LinearOpMode {
 
         boolean isIntaking = false;
         boolean isOutaking = false;
-        double targetVelocity = 1500.0;
+        double targetVelocity = 1550.0;
         final double kTolerance = 200.0;
         final double kSlowMode = 0.4;
+        boolean blocked =  true;
+        double open = 1.0;
+        double closed = 0.6;
 
         boolean isSpinningLeft = false;
         boolean isSpinningRight = false;
@@ -100,7 +107,21 @@ public class MECHAATOM extends LinearOpMode {
 
             transfer.setPower(-1.0);
 
-            shooter.setVelocity(1550);
+            shooter.setVelocity(targetVelocity);
+
+
+
+            if(gamepad1.xWasPressed())
+            {
+                blocked =!blocked;
+
+            }
+            if (blocked){
+                blocker.setPosition(closed);
+            }else{
+                blocker.setPosition(open);
+            }
+
 
             if (gamepad1.right_trigger >= 0.5) {
 //              isIntaking= !isIntaking;
@@ -138,11 +159,11 @@ public class MECHAATOM extends LinearOpMode {
             }
 
             if (isOutaking) {
-                intake.setPower(-1.0);
+                intake.setPower(1.0);
                 spinnyWheel2.setPower (-1.0);
                 spinnyWheel1.setPower(1.0);
             } else if (isIntaking ) {
-                intake.setPower(1.0);
+                intake.setPower(-1.0);
                 spinnyWheel2.setPower (1.0);
                 spinnyWheel1.setPower(-1.0);
             } else {
@@ -152,6 +173,8 @@ public class MECHAATOM extends LinearOpMode {
             }
             
             telemetry.addData("yaw", botHeading);
+            telemetry.addData("RPM",shooter.getVelocity());
+            telemetry.addData("BlockerPos", blocker.getPosition());
 
             telemetry.update();
         }
