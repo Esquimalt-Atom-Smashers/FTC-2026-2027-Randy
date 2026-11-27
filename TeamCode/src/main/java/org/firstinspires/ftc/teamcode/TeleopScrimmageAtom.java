@@ -25,15 +25,12 @@ public class TeleopScrimmageAtom extends LinearOpMode {
         DcMotor backRightMotor  = hardwareMap.dcMotor.get("backRightMotor");
         DcMotor intake = hardwareMap.dcMotor.get("intake");
         DcMotor transfer = hardwareMap.dcMotor.get("transfer");
-        DcMotor pusher = hardwareMap.dcMotor.get("pusher");
-        CRServo spinnyWheel1 =hardwareMap.crservo.get(" spinnyWheel1");
-        CRServo spinnyWheel2 =hardwareMap.crservo.get(" spinnyWheel2");
+        DcMotor kicker = hardwareMap.dcMotor.get("kicker");
+        CRServo spinyWheel1 = hardwareMap.crservo.get(" spinyWheel1");
+        CRServo spinyWheel2 = hardwareMap.crservo.get(" spinyWheel2");
         Servo blocker = hardwareMap.servo.get("blocker");
-
         
         DcMotorEx shooter = (DcMotorEx) hardwareMap.dcMotor.get("shooter");
-
-//      CRServo turret = hardwareMap.crservo.get("turret");
 
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -42,23 +39,15 @@ public class TeleopScrimmageAtom extends LinearOpMode {
 
         boolean isIntaking = false;
         boolean isOutaking = false;
-        double targetVelocity = 1550.0;
-        final double kTolerance = 200.0;
-        final double kSlowMode = 0.4;
+        double flywheelTargetVelocity = 1550.0;
+        final double flywheelRPMTolerance = 200.0;
+        final double slowMode = 0.4;
         boolean blocked =  true;
-        double open = 1.0;
-        double closed = 0.6;
+        double openBlocker = 1.0;
+        double blockerTimer = 0;
 
-        boolean isSpinningLeft = false;
-        boolean isSpinningRight = false;
+        double closedBlocker = 0.6;
 
-        // boolean isFlywheelMotorOn = false;
-        // boolean lastButtonState = false;
-
-        // Reverse the right side motors. This may be wrong for your setup.
-        // If your robot moves backwards when commanded to go forwards,
-        // reverse the left side instead.
-        // See the note about this earlier on this page.
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -73,7 +62,7 @@ public class TeleopScrimmageAtom extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-            //Field Centric Code
+            // Field Centric Code
             double y  = -gamepad1.left_stick_y;
             double x  =  gamepad1.left_stick_x;
             double rx =  gamepad1.right_stick_x;
@@ -103,70 +92,59 @@ public class TeleopScrimmageAtom extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower * speed);
             backRightMotor.setPower(backRightPower * speed);
 
-            transfer.setPower(-1.0);
 
-            shooter.setVelocity(targetVelocity);
+            // Mechanisms
+            transfer.setPower(1.0);
 
+            shooter.setVelocity(flywheelTargetVelocity);
 
-
-            if(gamepad1.xWasPressed())
-            {
-                blocked =!blocked;
-
-            }
-            if (blocked){
-                blocker.setPosition(closed);
-            }else{
-                blocker.setPosition(open);
-            }
-
+//            if(gamepad1.xWasPressed())
+//            {
+//                blocked =!blocked;
+//            }
+//
+//            if (blocked){
+//                blocker.setPosition(closedBlocker);
+//            } else {
+//                blocker.setPosition(openBlocker);
+//            }
 
             if (gamepad1.right_trigger >= 0.5) {
-//              isIntaking= !isIntaking;
-//              isOutaking = false;
-//              isSpinningLeft = !isSpinningLeft;
-//              isSpinningRight = !isSpinningRight;
-
                 isOutaking = true;
             } else {
                 isOutaking = false;
             }
 
             if (gamepad1.left_trigger >= 0.5) {
-//              isOutaking = !isOutaking;
-//              isIntaking = false;
-                isSpinningLeft = true;
-                isSpinningRight = true;
                 isIntaking = true;
             } else {
                 isIntaking = false;
             }
 
-//          if (isIntaking) {
-//              intake.setPower(1.0);
-//          } else {
-//              intake.setPower(0.0);
-//          }
-
             if(gamepad1.a) {
-                if(Math.abs(shooter.getVelocity()-targetVelocity) <= kTolerance) {
-                    pusher.setPower(-0.7);
+                if(Math.abs(shooter.getVelocity()-flywheelTargetVelocity) <= flywheelRPMTolerance) {
+                    kicker.setPower(-0.7);
+                    blocker.setPosition(openBlocker);
+                    blockerTimer=getRuntime();
                 }
             } else{
-                pusher.setPower(0.0);
+                blocker.setPosition(closedBlocker);
+                if (getRuntime()>(blockerTimer+1)) {//if it has been more than 1s since the blocker was open, turn off the kicker
+                    kicker.setPower(0.0);
+                }
             }
 
             if (isOutaking) {
                 intake.setPower(1.0);
-                spinnyWheel2.setPower (-1.0);
-                spinnyWheel1.setPower(1.0);
-            } else if (isIntaking ) {
+                spinyWheel2.setPower (-1.0);
+                spinyWheel1.setPower(1.0);
+            } else if (isIntaking) {
                 intake.setPower(-1.0);
-                spinnyWheel2.setPower (1.0);
-                spinnyWheel1.setPower(-1.0);
+                spinyWheel2.setPower (1.0);
+                spinyWheel1.setPower(-1.0);
             } else {
-                spinnyWheel2.setPower (0.0);
-                spinnyWheel1.setPower(0.0);
+                spinyWheel2.setPower (0.0);
+                spinyWheel1.setPower(0.0);
                 intake.setPower(0.0);
             }
             
