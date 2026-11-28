@@ -153,47 +153,47 @@ public class TeleopMeccaAtom extends LinearOpMode {
                     }
                 }
                 // Detect single button presses (rising edge) for D-pad Up and Down
-                boolean dpadUpPressed = gamepad1.dpad_up && !prevDpadUp;
-                boolean dpadDownPressed = gamepad1.dpad_down && !prevDpadDown;
-
-                // Update previous states for the next loop iteration
-                prevDpadUp = gamepad1.dpad_up;
-                prevDpadDown = gamepad1.dpad_down;
-
-                // Determine direction (+1 for up, -1 for down, 0 for neither)
-                int direction = 0;
-                if (dpadUpPressed) {
-                    direction = 1;
-                } else if (dpadDownPressed) {
-                    direction = -1;
-                }
-
-                // Apply changes only when D-pad Up or Down is newly pressed
-                if (direction != 0) {
-                    // If X is pressed, change shooterP values by the increment
-                    if (gamepad1.x) {
-                        shooterP += direction * increment;
-                    } else if (gamepad1.right_bumper) {
-                        flywheelTargetVelocity += increment * direction;
-                    }
-                    // If Y is pressed, change shooterD values by the increment
-                    else if (gamepad1.y) {
-                        shooterD += direction * increment;
-                    }
-                    // If B is pressed, change shooterF values by the increment
-                    else if (gamepad1.b) {
-                        shooterF += direction * increment;
-                    }
-                    // If Left Bumper is pressed, change increment by an order of magnitude (x10 or /10)
-                    else if (gamepad1.left_bumper) {
-                        if (direction > 0) {
-                            increment *= 10.0;
-                        } else {
-                            increment /= 10.0;
-                        }
-                    }
-                    shooter.setVelocityPIDFCoefficients(shooterP, 0, shooterD, shooterF);
-                }
+//                boolean dpadUpPressed = gamepad1.dpad_up && !prevDpadUp;
+//                boolean dpadDownPressed = gamepad1.dpad_down && !prevDpadDown;
+//
+//                // Update previous states for the next loop iteration
+//                prevDpadUp = gamepad1.dpad_up;
+//                prevDpadDown = gamepad1.dpad_down;
+//
+//                // Determine direction (+1 for up, -1 for down, 0 for neither)
+//                int direction = 0;
+//                if (dpadUpPressed) {
+//                    direction = 1;
+//                } else if (dpadDownPressed) {
+//                    direction = -1;
+//                }
+//
+//                // Apply changes only when D-pad Up or Down is newly pressed
+//                if (direction != 0) {
+//                    // If X is pressed, change shooterP values by the increment
+//                    if (gamepad1.x) {
+//                        shooterP += direction * increment;
+//                    } else if (gamepad1.right_bumper) {
+//                        flywheelTargetVelocity += increment * direction;
+//                    }
+//                    // If Y is pressed, change shooterD values by the increment
+//                    else if (gamepad1.y) {
+//                        shooterD += direction * increment;
+//                    }
+//                    // If B is pressed, change shooterF values by the increment
+//                    else if (gamepad1.b) {
+//                        shooterF += direction * increment;
+//                    }
+//                    // If Left Bumper is pressed, change increment by an order of magnitude (x10 or /10)
+//                    else if (gamepad1.left_bumper) {
+//                        if (direction > 0) {
+//                            increment *= 10.0;
+//                        } else {
+//                            increment /= 10.0;
+//                        }
+//                    }
+//                    shooter.setVelocityPIDFCoefficients(shooterP, 0, shooterD, shooterF);
+//                }
 
                 if (isOutaking) {
                     intake.setPower(1.0);

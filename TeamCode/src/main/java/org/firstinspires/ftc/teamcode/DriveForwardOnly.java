@@ -97,28 +97,6 @@ public class DriveForwardOnly extends LinearOpMode {
         driveForward();
         sleep(600);
         haltDriveMotors();
-//        sleep(1000);
-//        turnRight();
-//        haltDriveMotors();
-//        sleep(200);
-//
-//        driveForward();
-//        sleep(2000);
-//        haltDriveMotors();
-//        sleep(500);
-//        goLeft();
-//        sleep(100);
-
-//        reverseOnward();
-//        sleep(100);
-//        haltDriveMotors();
-        // sleep(100);
-//        turnRight();
-        //haltDriveMotors();
-        //sleep(1000);
-        // driveForward();
-        //sleep
-//
 
 
 
