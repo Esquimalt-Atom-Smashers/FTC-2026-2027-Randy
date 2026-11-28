@@ -72,26 +72,43 @@ public class DriveForwardOnly extends LinearOpMode {
 
         intake.setPower(1.0);
         spinyWheel1.setPower(1.0);
-        spinyWheel2.setPower(1.0);
+        spinyWheel2.setPower(-1.0);
 
         shoot();
         turnLeft();
         haltDriveMotors();
         sleep(1000);
-        driveForward();
-        sleep(800);
+        goLeft();
+        sleep(1000);
         haltDriveMotors();
         sleep(1000);
+        driveForward();
+        sleep(1700);
+        haltDriveMotors();
+        sleep(1200);
         reverseOnward();
-        sleep(250);
+        sleep(230);
         haltDriveMotors();
-        sleep(200);
-        turnRight();
         sleep(1000);
+        goRight();
+        sleep(1900);
         haltDriveMotors();
+        sleep(1500);
         driveForward();
-        sleep(2000);
+        sleep(600);
         haltDriveMotors();
+//        sleep(1000);
+//        turnRight();
+//        haltDriveMotors();
+//        sleep(200);
+//
+//        driveForward();
+//        sleep(2000);
+//        haltDriveMotors();
+//        sleep(500);
+//        goLeft();
+//        sleep(100);
+
 //        reverseOnward();
 //        sleep(100);
 //        haltDriveMotors();
@@ -140,10 +157,10 @@ public class DriveForwardOnly extends LinearOpMode {
     }
     private void driveForward()
     {
-        frontLeftMotor.setPower(1.0);
-        backLeftMotor.setPower(1.0);
-        frontRightMotor.setPower(1.0);
-        backRightMotor.setPower(1.0);
+        frontLeftMotor.setPower(0.5);
+        backLeftMotor.setPower(0.5);
+        frontRightMotor.setPower(0.5);
+        backRightMotor.setPower(0.5);
     }
 
     private void reverseOnward()
@@ -160,7 +177,7 @@ public class DriveForwardOnly extends LinearOpMode {
         backLeftMotor.setPower(-1.0);
         frontRightMotor.setPower(1.0);
         backRightMotor.setPower(1.0);
-        sleep(360);
+        sleep(405);
 
     }
 
@@ -170,15 +187,15 @@ public class DriveForwardOnly extends LinearOpMode {
         backLeftMotor.setPower(1.0);
         frontRightMotor.setPower(-1.0);
         backRightMotor.setPower(-1.0);
-        sleep(360);
+        sleep(405);
     }
 
     private void goLeft()
     {
-        frontLeftMotor.setPower(-1.0);
-        backLeftMotor.setPower(1.0);
-        frontRightMotor.setPower(1.0);
-        backRightMotor.setPower(-1.0);
+        frontLeftMotor.setPower(-0.7);
+        backLeftMotor.setPower(0.7);
+        frontRightMotor.setPower(0.7);
+        backRightMotor.setPower(-0.7);
 
 
     }
@@ -193,12 +210,12 @@ public class DriveForwardOnly extends LinearOpMode {
     }
     private void shoot()
     {
-        shooter.setVelocity(1550);
+        shooter.setVelocity(1570);
         kicker.setPower(-0.7);
         sleep(1000);
         blocker.setPosition(1.0);
         transfer.setPower(1.0);
-        sleep(5000);
+        sleep(9000);
         kicker.setPower(0.0);
         shooter.setVelocity(0);
         blocker.setPosition(0.6);
