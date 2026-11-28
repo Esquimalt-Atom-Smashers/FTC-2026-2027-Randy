@@ -14,7 +14,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-@Autonomous
+@Autonomous(name = "AtomAuto")
 public class DriveForwardOnly extends LinearOpMode {
 
     DcMotor frontLeftMotor;
